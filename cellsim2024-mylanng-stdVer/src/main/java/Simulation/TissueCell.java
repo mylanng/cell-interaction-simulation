@@ -26,24 +26,17 @@ public class TissueCell extends Cell{
     }
 
     @Override
-    public void interactNeighbors (ArrayList<Cell> eachcell) {
+    public void interactNeighbors (ArrayList<Cell> cellList) {
         int x = this.getX();
         int y = this.getY();
         int id = this.getID();
 
-        ArrayList <Cell> neighbors = new ArrayList <> ();
-        ArrayList <Integer> indices = adjacentCell(x,y) ;
+        ArrayList <Cell> tissueList = validIndices (cellList);
 
-        for (int i:indices){
-            if (i>0){
-                neighbors.add(eachcell.get(i));
-            }
-        }
-
-        for (Cell c:neighbors){
+        for (Cell c:tissueList){
             if (c.getID() == 0 ){
                 int index = indexFromCoord(c.getX(), c.getY());
-                eachcell.set(index, new TissueCell(coordFromIndex(index)));
+                cellList.set(index, new TissueCell(coordFromIndex(index)));
             }
         }
     }

@@ -52,8 +52,9 @@ public class Cell {
         }
     }
 
+    //Class constructor for Cell class
     public Cell (){
-        this (0,0,0,0);
+        this (0,0,0,0); // Initial values
     }
 
     public int getX(){
@@ -99,7 +100,19 @@ public class Cell {
         return NeighborCells;
     }
 
-    public void interactNeighbors(ArrayList<Cell> eachcell) {
+    public ArrayList <Cell> validIndices (ArrayList <Cell> CellList){
+        ArrayList <Cell> neighbors = new ArrayList <> ();
+        ArrayList <Integer> indices = adjacentCell(x,y) ;
+
+        for (int i:indices){
+            if (i>0){
+                neighbors.add(CellList.get(i));
+            }
+        }
+        return neighbors;
+    }
+
+    public void interactNeighbors(ArrayList<Cell> cellList) {
     }
 
 

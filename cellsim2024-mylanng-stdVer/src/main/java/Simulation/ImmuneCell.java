@@ -20,23 +20,16 @@ public class ImmuneCell extends Cell{
         super (3, coords.getX(), coords.getY(), 4);
     }
 
-    public void interactNeighbors (ArrayList<Cell> eachcell) {
+    public void interactNeighbors (ArrayList<Cell> cellList) {
         int x = getX();
         int y = getY();
-        int id_cell = getID();
 
-        ArrayList<Integer> indices = adjacentCell(x,y);
-        ArrayList <Cell> neighbor_cells = new ArrayList<>();
-        for (int i:indices){
-            if (i>0){
-                neighbor_cells.add(eachcell.get(i));
-            }
-        }
+        ArrayList <Cell> immuneList = validIndices (cellList);
 
-        for (Cell c:neighbor_cells){
+        for (Cell c:immuneList){
             if (c.getID()==3 ){
                 int index = indexFromCoord(c.getX(), c.getY());
-                eachcell.set(index, new DeadCell(coordFromIndex(index)));
+                cellList.set(index, new DeadCell(coordFromIndex(index)));
             }
         }
 
