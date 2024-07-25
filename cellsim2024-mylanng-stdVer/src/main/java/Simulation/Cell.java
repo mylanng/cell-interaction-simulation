@@ -92,8 +92,8 @@ public class Cell {
         return this.id;
     }
 
-    public ArrayList<Integer> adjacentCell (int xcoords, int ycoords){
-        ArrayList<Integer> NeighborCells = new ArrayList<>();
+    public ArrayList<Integer> NeighborIndices(int xcoords, int ycoords){
+        ArrayList<Integer> IndicesList = new ArrayList<>();
         int[][] relativePosition = {
                 {-1, 1} , {0, 1} , {1, 1},
                 {-1, 0} ,          {1, 0},
@@ -102,41 +102,40 @@ public class Cell {
 
         for (int[] relPos : relativePosition) {
             if ((xcoords+relPos[0] >=0 && xcoords+relPos[0] < 100) && (ycoords+relPos[1] >= 0 && ycoords+relPos[1] < 100)) {
-                NeighborCells.add(indexFromCoord(xcoords+relPos[0], ycoords+relPos[1]));
+                IndicesList.add(indexFromCoord(xcoords+relPos[0], ycoords+relPos[1]));
             }
         }
-
-        return NeighborCells;
+        return IndicesList;
     }
 
-    public ArrayList <Cell> validIndices (ArrayList <Cell> CellList, int x, int y){
-        ArrayList <Cell> neighbors = new ArrayList <> ();
-        ArrayList <Integer> indices = adjacentCell(x,y) ;
+    public ArrayList <Cell> validCell(ArrayList <Cell> CellList, int x, int y){
+        ArrayList <Cell> neighborCells = new ArrayList <> ();
+        ArrayList <Integer> indices = NeighborIndices(x,y) ;
 
         for (int i:indices){
             if (i>=0){
-                neighbors.add(CellList.get(i));
+                neighborCells.add(CellList.get(i));
             }
         }
-        return neighbors;
+        return neighborCells;
     }
 
     public ArrayList<Integer> addCellID (ArrayList <Cell> CellList, int id){
-        ArrayList<Integer> newIndices = new ArrayList<>();
+        ArrayList<Integer> IDcells = new ArrayList<>();
 
         for (Cell c:CellList){
             if (c.getID() == id){
                 int index = indexFromCoord(c.getX(), c.getY());
-                newIndices.add (index);
+                IDcells.add (index);
             }
         }
-        return newIndices;
+        return IDcells;
     }
 
-    public void interactNeighbors(ArrayList<Cell> cellList) {
+    public void interactNeighbors(ArrayList<Cell> neighbors) {
     }
 
-    public int getRandomCell (ArrayList<Integer> cellList){
+    public int getRandomCellIndex(ArrayList<Integer> cellList){
         Random randInt = new Random();
         int index = randInt.nextInt(cellList.size());
         return cellList.get(index);

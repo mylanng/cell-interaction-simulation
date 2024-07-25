@@ -2,12 +2,8 @@ package Simulation;
 
 
 import Util.Pair;
-
 import java.util.ArrayList;
-import java.util.Random;
-
 import static Util.Calculator.coordFromIndex;
-import static Util.Calculator.indexFromCoord;
 
 
 /**
@@ -29,36 +25,35 @@ public class CancerCell extends Cell{
     }
 
     @Override
-    public void interactNeighbors (ArrayList<Cell> cellList) {
+    public void interactNeighbors (ArrayList<Cell> neighbors) {
         int x = this.getX();
         int y = this.getY();
 
-        ArrayList <Cell> cancerList = validIndices (cellList, x, y);
+        ArrayList <Cell> cancerListNeighbors = validCell(neighbors, x, y);
 
-        ArrayList <Integer> dead_indices = addCellID (cancerList, 0);
-        ArrayList <Integer> immune_indices = addCellID (cancerList, 4);
-        ArrayList <Integer> tissue_indices = addCellID (cancerList, 1);
+        ArrayList <Integer> dead_indices = addCellID (cancerListNeighbors, 0);
+        ArrayList <Integer> immune_indices = addCellID (cancerListNeighbors, 4);
+        ArrayList <Integer> tissue_indices = addCellID (cancerListNeighbors, 1);
 
         if (dead_indices.size() > 0){
-            int replace1 = getRandomCell(dead_indices);
-            cellList.set (replace1, new CancerCell(coordFromIndex(replace1)));
+            // Cancer cell grows immediately on a DeadCell.
+            neighbors.set (dead_indices.get(0), new CancerCell(coordFromIndex(dead_indices.get(0))));
         }
 
         else if (tissue_indices.size() > immune_indices.size() && tissue_indices.size() > 0){
-            int replace2 = getRandomCell(tissue_indices);
-            cellList.set (replace2, new DeadCell(coordFromIndex(replace2)));
+            int replace2 = getRandomCellIndex(tissue_indices);
+            neighbors.set (replace2, new DeadCell(coordFromIndex(replace2)));
         }
 
         else if (immune_indices.size() > 0){
-            int replace3 = getRandomCell(immune_indices);
-            cellList.set (replace3, new DeadCell(coordFromIndex(replace3)));
+            int replace3 = getRandomCellIndex(immune_indices);
 
-            if(cellList.get(replace3).getStrength() == 0){
-                cellList.set (replace3, new DeadCell(coordFromIndex(replace3)));
+            if(neighbors.get(replace3).getStrength() == 0){
+                neighbors.set (replace3, new DeadCell(coordFromIndex(replace3)));
             }
             else{
-                int currentStr = cellList.get(replace3).getStrength();
-                cellList.get(replace3).setStrength(currentStr - 1);
+                int currStrength = neighbors.get(replace3).getStrength();
+                neighbors.get(replace3).setStrength(currStrength - 1);
             }
         }
     }

@@ -3,7 +3,6 @@ package Simulation;
 import Util.Pair;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static Util.Calculator.indexFromCoord;
 import static Util.Calculator.coordFromIndex;
@@ -22,16 +21,16 @@ public class ImmuneCell extends Cell{
         super (3, coords.getX(), coords.getY(), 4);
     }
 
-    public void interactNeighbors (ArrayList<Cell> cellList) {
+    public void interactNeighbors (ArrayList<Cell> neighbors) {
         int x = this.getX();
         int y = this.getY();
 
-        ArrayList <Cell> immuneList = validIndices (cellList, x, y);
+        ArrayList <Cell> immuneList = validCell(neighbors, x, y);
         ArrayList<Integer> CancerCellIndices = addCellID (immuneList, 3);
 
         if (CancerCellIndices.size() > 0){
-            int replace = getRandomCell(CancerCellIndices);
-            cellList.set (replace, new DeadCell(coordFromIndex(replace)));
+            int replace = getRandomCellIndex(CancerCellIndices);
+            neighbors.set (replace, new DeadCell(coordFromIndex(replace)));
         }
     }
 }
