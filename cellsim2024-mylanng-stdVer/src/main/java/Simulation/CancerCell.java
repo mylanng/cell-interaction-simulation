@@ -39,7 +39,7 @@ public class CancerCell extends Cell{
         ArrayList <Integer> immune_indices = addCellID (cancerList, 4);
         ArrayList <Integer> tissue_indices = addCellID (cancerList, 1);
 
-        if (dead_indices.size() != 0){
+        if (dead_indices.size() > 0){
             int replace1 = getRandomCell(dead_indices);
             cellList.set (replace1, new CancerCell(coordFromIndex(replace1)));
         }
