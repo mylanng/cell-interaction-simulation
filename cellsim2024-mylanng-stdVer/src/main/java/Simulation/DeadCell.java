@@ -23,4 +23,7 @@ public class DeadCell extends Cell{
         super (0, coords.getX(), coords.getY(), 0);
     }
 
+    @Override
+    public void interactNeighbors(ArrayList<Cell> neighbors){
+    }
 }

@@ -4,6 +4,7 @@ package Simulation;
 import Util.Pair;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static Util.Calculator.coordFromIndex;
 import static Util.Calculator.indexFromCoord;
@@ -31,12 +32,14 @@ public class TissueCell extends Cell{
         int y = this.getY();
         int id = this.getID();
 
-        ArrayList <Cell> tissueList = validIndices (cellList);
+        ArrayList <Cell> tissueList = validIndices (cellList, x, y);
+        ArrayList<Integer> DeadCellIndices = addCellID (tissueList, 0);
 
-        for (Cell c:tissueList){
-            if (c.getID() == 0 ){
-                int index = indexFromCoord(c.getX(), c.getY());
-                cellList.set(index, new TissueCell(coordFromIndex(index)));
+        if(DeadCellIndices.size() > 0){
+            double random = Math.random() * 100;
+            if(random >= 30){
+                int replace = getRandomCell(DeadCellIndices);
+                cellList.set (replace, new TissueCell(coordFromIndex(replace)));
             }
         }
     }

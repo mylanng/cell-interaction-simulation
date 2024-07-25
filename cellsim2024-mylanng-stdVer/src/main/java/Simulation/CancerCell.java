@@ -5,6 +5,8 @@ import Util.Pair;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import static Util.Calculator.coordFromIndex;
 import static Util.Calculator.indexFromCoord;
 
 
@@ -25,60 +27,38 @@ public class CancerCell extends Cell{
     public CancerCell (Pair coords){
         super (1, coords.getX(), coords.getY(), 3);
     }
+
+    @Override
     public void interactNeighbors (ArrayList<Cell> cellList) {
         int x = this.getX();
         int y = this.getY();
-        int id = this.getID();
 
+        ArrayList <Cell> cancerList = validIndices (cellList, x, y);
 
-        ArrayList <Integer> dead_indices = new ArrayList<>();
-        ArrayList <Integer> immune_indices = new ArrayList<>();
-        ArrayList <Integer> tissue_indices = new ArrayList<>();
+        ArrayList <Integer> dead_indices = addCellID (cancerList, 0);
+        ArrayList <Integer> immune_indices = addCellID (cancerList, 4);
+        ArrayList <Integer> tissue_indices = addCellID (cancerList, 1);
 
-        ArrayList <Cell> dead_cell = new ArrayList<>();
-        ArrayList <Cell> immune_cell = new ArrayList<>();
-        ArrayList <Cell> tissue_cell = new ArrayList<>();
-
-        ArrayList <Cell> cancerList = validIndices (cellList);
-
-        for (Cell c :cancerList){
-            if (c.getID() == 0 && c.getStrength() == 0){
-                dead_indices.add(indexFromCoord(c.getX(), c.getY()));
-                dead_cell.add(c);
-            }
-            else if (c.getID() == 4 && c.getStrength() == 3){
-                immune_indices.add(indexFromCoord(c.getX(), c.getY()));
-                immune_cell.add(c);
-            }
-            else if (c.getID() == 1 && c.getStrength() == 0) {
-                tissue_indices.add(indexFromCoord(c.getX(), c.getY()));
-                tissue_cell.add(c);
-            }
-            else {}
-
+        if (dead_indices.size() != 0){
+            int replace1 = getRandomCell(dead_indices);
+            cellList.set (replace1, new CancerCell(coordFromIndex(replace1)));
         }
 
-        if (dead_cell.size() >0){
-            Random rand_dead = new Random();
-            Cell newCell = dead_cell.get (rand_dead.nextInt (dead_cell.size()));
-            newCell.changeID(3);
-            newCell.changeStrength(1);
+        else if (tissue_indices.size() > immune_indices.size() && tissue_indices.size() > 0){
+            int replace2 = getRandomCell(tissue_indices);
+            cellList.set (replace2, new DeadCell(coordFromIndex(replace2)));
         }
 
-        if (tissue_cell.size() > immune_cell.size()){
-            Random rand_tissue = new Random();
-            Cell newTissue = tissue_cell.get (rand_tissue.nextInt (tissue_cell.size()));
-            newTissue.changeID(0);
-            newTissue.changeStrength(0);
-        }
+        else if (immune_indices.size() > 0){
+            int replace3 = getRandomCell(immune_indices);
+            cellList.set (replace3, new DeadCell(coordFromIndex(replace3)));
 
-        if (immune_cell.size() > tissue_cell.size()){
-            Random rand_immune = new Random();
-            Cell newattack = immune_cell.get (rand_immune.nextInt (immune_cell.size()));
-            int attackornot = rand_immune.nextInt (2);
-            if (attackornot == 1){
-                newattack.changeID(0);
-                newattack.changeStrength(0);
+            if(cellList.get(replace3).getStrength() == 0){
+                cellList.set (replace3, new DeadCell(coordFromIndex(replace3)));
+            }
+            else{
+                int currentStr = cellList.get(replace3).getStrength();
+                cellList.get(replace3).setStrength(currentStr - 1);
             }
         }
     }

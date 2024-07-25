@@ -2,6 +2,7 @@ package Simulation;
 
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static Util.Calculator.indexFromCoord;
 
@@ -22,41 +23,59 @@ public class Cell {
     private int strength;
     private int id;
 
+    public Cell (){
+        // Initial values
+        strength = 0;
+        x = 0;
+        y = 0;
+        id = 0;
+    }
+
+    // Setters
     public Cell (int strength, int x, int y, int id){
-        if (strength > 0){
+        setStrength(strength);
+        setX(x);
+        setY(y);
+        setID(id);
+    }
+
+    public void setStrength(int strength) {
+        if (strength > 0) {
             this.strength = strength;
-        }
-        else {
+        } else {
             this.strength = 0;
         }
 
-        if (x > 0){
+    }
+
+    public void setX(int x) {
+        if (x > 0) {
             this.x = x;
-        }
-        else {
+        } else {
             this.x = 0;
         }
 
-        if (y > 0){
+    }
+
+    public void setY(int y) {
+        if (y > 0) {
             this.y = y;
-        }
-        else {
+        } else {
             this.y = 0;
         }
 
-        if (id > 0){
+    }
+
+    public void setID(int id) {
+        if (id > 0) {
             this.id = id;
-        }
-        else {
+        } else {
             this.id = 0;
         }
+
     }
 
     //Class constructor for Cell class
-    public Cell (){
-        this (0,0,0,0); // Initial values
-    }
-
     public int getX(){
         return this.x;
     }
@@ -73,47 +92,53 @@ public class Cell {
         return this.id;
     }
 
-    public int changeID (int id){
-        this.id = id;
-        return this.id;
-    }
-
-    public int changeStrength (int strength){
-        this.strength = strength;
-        return this.strength;
-    }
-
-    //private HashMap <String, Double> ChemConcentrations;
-    //private HashSet <String> signal;
     public ArrayList<Integer> adjacentCell (int xcoords, int ycoords){
         ArrayList<Integer> NeighborCells = new ArrayList<>();
+        int[][] relativePosition = {
+                {-1, 1} , {0, 1} , {1, 1},
+                {-1, 0} ,          {1, 0},
+                {-1, -1}, {0, -1}, {1, -1},
+        };
 
-        NeighborCells.add (indexFromCoord(xcoords+1,ycoords+1));
-        NeighborCells.add (indexFromCoord(xcoords,ycoords+1));
-        NeighborCells.add (indexFromCoord(xcoords-1,ycoords+1));
-        NeighborCells.add (indexFromCoord(xcoords,ycoords-1));
-        NeighborCells.add (indexFromCoord(xcoords+1,ycoords-1));
-        NeighborCells.add (indexFromCoord(xcoords-1,ycoords-1));
-        NeighborCells.add (indexFromCoord(xcoords+1,ycoords));
-        NeighborCells.add (indexFromCoord(xcoords-1,ycoords));
+        for (int[] relPos : relativePosition) {
+            if ((xcoords+relPos[0] >=0 && xcoords+relPos[0] < 100) && (ycoords+relPos[1] >= 0 && ycoords+relPos[1] < 100)) {
+                NeighborCells.add(indexFromCoord(xcoords+relPos[0], ycoords+relPos[1]));
+            }
+        }
 
         return NeighborCells;
     }
 
-    public ArrayList <Cell> validIndices (ArrayList <Cell> CellList){
+    public ArrayList <Cell> validIndices (ArrayList <Cell> CellList, int x, int y){
         ArrayList <Cell> neighbors = new ArrayList <> ();
         ArrayList <Integer> indices = adjacentCell(x,y) ;
 
         for (int i:indices){
-            if (i>0){
+            if (i>=0){
                 neighbors.add(CellList.get(i));
             }
         }
         return neighbors;
     }
 
+    public ArrayList<Integer> addCellID (ArrayList <Cell> CellList, int id){
+        ArrayList<Integer> newIndices = new ArrayList<>();
+
+        for (Cell c:CellList){
+            if (c.getID() == id){
+                int index = indexFromCoord(c.getX(), c.getY());
+                newIndices.add (index);
+            }
+        }
+        return newIndices;
+    }
+
     public void interactNeighbors(ArrayList<Cell> cellList) {
     }
 
-
+    public int getRandomCell (ArrayList<Integer> cellList){
+        Random randInt = new Random();
+        int index = randInt.nextInt(cellList.size());
+        return cellList.get(index);
+    }
 }
